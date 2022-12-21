@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const hourlyAvgSchema = new mongoose.Schema({
+const dailyAvgSchema = new mongoose.Schema({
     name: { type: String, require: true, index: true },
     average: { type: Number, require: true},
     timestamp: { type: Number, require: true, index: true },
@@ -7,6 +7,6 @@ const hourlyAvgSchema = new mongoose.Schema({
 });
 // End Main Schema
  
-const model = mongoose.model("hourlyavgs", hourlyAvgSchema);
+const model = mongoose.model("dailyavgs", dailyAvgSchema);
  
 module.exports = model;

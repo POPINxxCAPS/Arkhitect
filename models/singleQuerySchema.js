@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
-const hourlyAvgSchema = new mongoose.Schema({
+ 
+const serverSchema = new mongoose.Schema({
     name: { type: String, require: true, index: true },
-    average: { type: Number, require: true},
+    players: { type: Number, require: true },
     timestamp: { type: Number, require: true, index: true },
-    dataPoints: { type: Number, require: true }
 });
 // End Main Schema
  
-const model = mongoose.model("hourlyavgs", hourlyAvgSchema);
+const model = mongoose.model("singleQueries", serverSchema);
  
 module.exports = model;
