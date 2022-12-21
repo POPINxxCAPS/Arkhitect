@@ -4,7 +4,6 @@ const Discord = require('discord.js');
 const client = new Discord.Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
-const prefix = 'a!';
 
 client.commands = new Discord.Collection();
 client.events = new Discord.Collection();
@@ -14,10 +13,8 @@ client.events = new Discord.Collection();
 });
 
 // Start MongoDB setup
-const {
-  mongoDBLogin,
-  token
-} = require('./env/env');
+const mongoDBLogin = process.env.mongoDBLogin || require('./env/env').mongoDBLogin;
+const token = process.env.token || require('./env/env').token;
 mongoose
   .connect(mongoDBLogin, {
     useNewUrlParser: true,
