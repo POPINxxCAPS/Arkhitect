@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Bot made to log xbox ark server data",
   "main": "bot.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node ."
+  },
   "author": "POPINxxCAPS",
   "license": "ISC",
   "dependencies": {
