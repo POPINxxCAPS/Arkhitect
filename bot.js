@@ -39,7 +39,6 @@ client.login(token);
 // Start bot functions once bot has logged in
 const officialServerQuery = require('./functions/officialServerQuery');
 const hourlyAverager = require('./functions/hourlyAverager');
-const genAlarmHandler = require('./handlers/genAlarmHandler');
 const dailyAverager = require('./functions/dailyAverager');
 
 client.on('ready', async () => {
