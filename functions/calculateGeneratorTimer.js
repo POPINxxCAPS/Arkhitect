@@ -16,6 +16,4 @@ async function calculator(generator, element, elementShards) {
     return timeRemaining
 }
 
-module.exports = {
-    calculator,
-}
+module.exports = calculator
