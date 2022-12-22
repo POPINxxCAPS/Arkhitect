@@ -7,10 +7,13 @@ module.exports = async () => {
     const firstDoc = await hourlyAvgModel.findOne({}); // Get the first document in the collection
     if (firstDoc === null) return;
     // Wait until 48hrs have passed since first doc in collection
-    if(firstDoc.timestamp < (start_time - (3600000 * 25))) return;
+    const timeTest = start_time - firstDoc.timestamp;
+    const timeLimit = 86500000;
+    console.log(timeTest)
+    if(timeTest < timeLimit) return;
     console.log('Running daily averager');
     const queryStartTime = firstDoc.timestamp;
-    const queryEndTime = firstDoc.timestamp + (3600000 * 24);
+    const queryEndTime = firstDoc.timestamp + 86400000;
     let documents = await hourlyAvgModel.find({
         timestamp: {
             $gte: queryStartTime,
@@ -30,9 +33,6 @@ module.exports = async () => {
             dataToAvg += single.players;
             count += 1;
             dataPoints += single.dataPoints;
-            single.remove();
-            const index = documents.indexOf(single);
-            documents.splice(index, 1); // Improves speed by reducing the amount of repeated documents...
         }
         const average = Math.round(dataToAvg / count);
         insertData.push({
@@ -42,6 +42,10 @@ module.exports = async () => {
             dataPoints: dataPoints
         })
         finishedAverages.push(doc.name)
+    }
+
+    for(const doc of documents) {
+        doc.remove();
     }
 
     await dailyAvgModel.insertMany(insertData);

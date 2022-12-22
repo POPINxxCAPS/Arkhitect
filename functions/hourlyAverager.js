@@ -5,9 +5,11 @@ const ms = require('ms');
 module.exports = async () => {
     const start_time = Date.now();
     const firstDoc = await singleQueryModel.findOne({}); // Get the first document in the collection
-    if (firstDoc === null) return;
-    // Wait until 1 1/2hrs have passed since first doc in collection
-    if(firstDoc.timestamp < (start_time - (3600000 * 1.5))) return;
+    if (firstDoc === null) return console.log('No documents, cancelling hourly averager.');
+    const timeTest = start_time - firstDoc.timestamp;
+    const timeLimit = 3700000;
+    console.log(timeTest)
+    if(timeTest < timeLimit) return;
     console.log('Running hourly averager');
     const queryStartTime = firstDoc.timestamp;
     const queryEndTime = firstDoc.timestamp + 3600000;
@@ -16,7 +18,7 @@ module.exports = async () => {
             $gte: queryStartTime,
             $lte: queryEndTime
         }
-    })
+    }).catch(err => { console.log(err )})
 
     let finishedAverages = [];
     let insertData = [];
@@ -30,9 +32,6 @@ module.exports = async () => {
             dataToAvg += single.players;
             timestampToAvg += single.timestamp;
             count += 1;
-            single.remove();
-            const index = documents.indexOf(single);
-            documents.splice(index, 1); // Improves speed by reducing the amount of repeated documents...
         }
         const average = Math.round(dataToAvg / count);
         const timestampAvg = Math.round(timestampToAvg / count);
@@ -43,6 +42,10 @@ module.exports = async () => {
             dataPoints: count
         })
         finishedAverages.push(doc.name)
+    }
+
+    for(const doc of documents) {
+        doc.remove();
     }
 
     await hourlyAvgModel.insertMany(insertData);
