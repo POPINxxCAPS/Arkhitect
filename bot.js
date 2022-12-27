@@ -48,6 +48,7 @@ client.on('ready', async () => {
     running = true;
     await officialServerQuery(client);
     await hourlyAverager();
+    await dailyAverager();
     running = false;
   }, 180000); // Query all servers every 3 minutes.
   //genAlarmHandler(client, Discord);

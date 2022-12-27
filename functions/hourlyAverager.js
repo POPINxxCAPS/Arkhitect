@@ -1,5 +1,6 @@
 const singleQueryModel = require('../models/singleQuerySchema');
 const hourlyAvgModel = require('../models/hourlyAvgSchema');
+const trunc = require('./trunc');
 const ms = require('ms');
 
 module.exports = async () => {
@@ -33,11 +34,12 @@ module.exports = async () => {
             timestampToAvg += single.timestamp;
             count += 1;
         }
-        const average = Math.round(dataToAvg / count);
+        const average = dataToAvg / count;
+        const truncAvg = trunc(average, 3);
         const timestampAvg = Math.round(timestampToAvg / count);
         insertData.push({
             name: doc.name,
-            average: average,
+            average: truncAvg,
             timestamp: timestampAvg,
             dataPoints: count
         })

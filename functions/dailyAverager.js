@@ -1,12 +1,13 @@
 const hourlyAvgModel = require('../models/hourlyAvgSchema');
 const dailyAvgModel = require('../models/dailyAvgSchema');
 const ms = require('ms');
+const trunc = require('./trunc');
 
 module.exports = async () => {
     const start_time = Date.now();
     const firstDoc = await hourlyAvgModel.findOne({}); // Get the first document in the collection
     if (firstDoc === null) return;
-    // Wait until 48hrs have passed since first doc in collection
+    // Wait until 24hrs have passed since first doc in collection
     const timeTest = start_time - firstDoc.timestamp;
     const timeLimit = 86500000;
     console.log(timeTest)
@@ -30,18 +31,19 @@ module.exports = async () => {
         let dataPoints = 0;
         for (const single of documents) {
             if (doc.name !== single.name) continue;
-            dataToAvg += single.players;
+            dataToAvg += parseFloat(single.average);
             count += 1;
             dataPoints += single.dataPoints;
         }
-        const average = Math.round(dataToAvg / count);
+        const average = dataToAvg / count;
+        const truncAvg = trunc(average, 3);
         insertData.push({
             name: doc.name,
-            average: average,
+            average: truncAvg,
             timestamp: doc.timestamp,
             dataPoints: dataPoints
         })
-        finishedAverages.push(doc.name)
+        finishedAverages.push(doc.name);
     }
 
     for(const doc of documents) {
